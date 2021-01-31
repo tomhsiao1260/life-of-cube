@@ -1,13 +1,15 @@
 {
-  "name": "Life of Cube",
+  "name": "life-of-cube",
   "version": "1.0.0",
   "main": "index.js",
+  "repository": "https://github.com/TomHsiao1260/life-of-cube.git",
+  "author": "Hsiao Yao <tomtogo1260@gmail.com>",
   "license": "MIT",
   "homepage": "https://tomhsiao1260.github.io/life-of-cube/",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
     "dev": "webpack serve --config ./bundler/webpack.dev.js",
-    "predeploy": "npm run build",
+    "predeploy": "yarn run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
