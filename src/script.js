@@ -8,7 +8,11 @@ import fragmentShader from './shaders/fragment.glsl'
 const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
-const length = 0.5
+const parameters = {
+    size: 0.5, // size of geometry
+    speed: 1,  // progress speed
+    step: 6,   // number of splits
+}
 
 const material = new THREE.ShaderMaterial({
     vertexShader: vertexShader,
@@ -16,11 +20,13 @@ const material = new THREE.ShaderMaterial({
     uniforms:
     {
         uTime: { value: 0 },
-        uLength: { value: length },
+        uSize: { value: parameters.size },
+        uStep: { value: parameters.step },
     }
 })
 
-const geometry = new THREE.BoxGeometry(length, length, length, 100, 100, 100)
+// Geometry
+const geometry = new THREE.BoxGeometry(parameters.size, parameters.size, parameters.size, 100, 100, 100)
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material)
@@ -60,7 +66,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const clock = new THREE.Clock()
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-    material.uniforms.uTime.value = elapsedTime
+
+    material.uniforms.uTime.value = elapsedTime * parameters.speed / Math.PI
 
     controls.update()
     renderer.render(scene, camera)
