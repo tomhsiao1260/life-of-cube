@@ -1,10 +1,10 @@
 #define PI 3.1415926535897932384626433832795
 
-uniform float uTime;
+uniform float uTime; // normalized progress time 
+uniform float uStep; // number of splits
 
-varying vec2 vUv;
-varying float vStrength;
-varying float vMode;
+varying float vMode; // current mode
+varying vec2 vUv;    // UV coordinate
 
 void main()
 {
@@ -18,9 +18,7 @@ void main()
 
     // heartbeat (a high frequency signal with step function filter)
     float beat = (1.0 + cos(roundness * 27.0)) / 2.0;
-    beat *= step(0.78, roundness);
-    // only show beat color on the cell edge
-    beat = clamp(beat - vStrength / 2.0, 0.0, 1.0);
+    beat *= step(0.78, roundness) * 0.5;
     // no beat when mode below 2
     beat *= step(2.01, vMode);
 
@@ -28,18 +26,26 @@ void main()
 
     vec3 originColor = vec3(vUv, 1.0) / 1.3;
     vec3 darkColor   = vec3(0.0);
-    vec3 beatColor   = vec3(0.7, 0.0, 0.7);
+    vec3 beatColor   = vec3(0.6, 0.0, 0.6);
     vec3 brightColor = vec3(0.8);
     vec3 color       = originColor;
 
-    // add darkness near the cell edge
-    color = mix(   darkColor,       color,  vStrength );
     // add heartbeat color when heartbeat occurs (beat ~ 1)
-    color = mix(       color,   beatColor,       beat );
+    color = mix( color, beatColor, beat );
     // add brightness around cell center
-    color = mix(       color, brightColor, brightness );
+    color = mix( color, brightColor, brightness );
     // transition between cube (originColor) and cells (color)
-    color = mix( originColor,       color, transition );
+    color = mix( originColor, color, transition );
 
+    // enable: 0 (invisible), 1 (visible)
+    float enable = floor(mod(uTime, 2.0 * uStep) / uStep);
+    enable = 1.0 - enable;
+    // enable transition trick (linear rather than step transition)
+    float crop = mix(5.0, 3.0, enable) * (1.0 - mod(uTime, uStep) / uStep);
+    crop = clamp(crop, 0.0, 1.0);
+    // enable: 0 -> 1 (slope 5.0), 1 -> 0 (slope 3.0) 
+    enable = mix(1.0 - crop, crop, enable);
+    
     gl_FragColor = vec4(color, 1.0);
+    gl_FragColor *= enable;
 }

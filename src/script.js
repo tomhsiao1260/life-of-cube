@@ -1,42 +1,168 @@
 import './style.css'
 import * as THREE from 'three'
+import Stats from 'stats.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
-import vertexShader from './shaders/vertex.glsl'
-import fragmentShader from './shaders/fragment.glsl'
+import solidVertexShader from './shaders/solid/vertex.glsl'
+import solidFragmentShader from './shaders/solid/fragment.glsl'
+import particlesVertexShader from './shaders/particles/vertex.glsl'
+import particlesFragmentShader from './shaders/particles/fragment.glsl'
+import heartVertexShader from './shaders/heart/vertex.glsl'
+import heartFragmentShader from './shaders/heart/fragment.glsl'
 
+// Scene
 const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
-const parameters = {
-    size: 0.5, // size of geometry
-    speed: 1,  // progress speed
-    step: 6,   // number of splits
-}
+// Load texture for particles
+const TextureLoader = new THREE.TextureLoader();
+const spotTexture = TextureLoader.load( './textures/spot.png' )
 
-const material = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
-    uniforms:
-    {
-        uTime: { value: 0 },
-        uSize: { value: parameters.size },
-        uStep: { value: parameters.step },
-    }
-})
-
-// Geometry
-const geometry = new THREE.BoxGeometry(parameters.size, parameters.size, parameters.size, 100, 100, 100)
-
-// Mesh
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+// FPS meter
+const stats = new Stats()
+stats.showPanel(0)
+// document.body.appendChild(stats.dom)
 
 // Sizes
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+
+// Parameters
+const parameters = {
+    width: 0.5,  // size of geometry
+    speed: 1,    // progress speed
+    step: 6,     // number of splits
+    size: 10,    // particle size
+    counts: 50,  // particles number along one side
+    nHeart: 200, // heart particles number
+}
+
+// Renderer
+const renderer = new THREE.WebGLRenderer({ canvas: canvas })
+renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+// ############################################################### //
+// #######################   Solid Part   ######################## //
+// ############################################################### //
+
+const width = parameters.width
+
+// Material
+const solidMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    vertexShader: solidVertexShader,
+    fragmentShader: solidFragmentShader,
+    uniforms:
+    {
+        uTime:  { value: 0 },
+        uWidth: { value: parameters.width },
+        uStep:  { value: parameters.step },
+    }
+})
+
+// Geometry
+const solidGeometry = new THREE.BoxGeometry(width, width, width, 50, 50, 50)
+
+// Mesh
+const solid = new THREE.Mesh(solidGeometry, solidMaterial)
+scene.add(solid)
+
+// ############################################################### //
+// ####################   Particles Part   ####################### //
+// ############################################################### //
+
+const counts = parameters.counts
+
+// Material
+const particlesMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    vertexShader: particlesVertexShader,
+    fragmentShader: particlesFragmentShader,
+    uniforms:
+    {
+        uTime:    { value: 0 },
+        uWidth:   { value: parameters.width },
+        uStep:    { value: parameters.step },
+        uSize:    { value: parameters.size * renderer.getPixelRatio() },
+        uTexture: { value: spotTexture },
+    }
+})
+
+// Geometry
+const particlesGeometry = new THREE.BufferGeometry()
+
+// Use BoxGeometry position, UV attributes on our particles geometry
+const cube = new THREE.BoxGeometry(width, width, width, counts, counts, counts)
+particlesGeometry.attributes.position = cube.attributes.position
+particlesGeometry.attributes.uv = cube.attributes.uv
+
+// Set 1 random value for each vertex
+const particlesCount = particlesGeometry.attributes.position.count;
+const particlesRandom = new Float32Array(particlesCount * 1)
+particlesRandom.forEach( (value, i) => particlesRandom[i] = Math.random())
+particlesGeometry.setAttribute('aRandomness', new THREE.BufferAttribute(particlesRandom, 1))
+
+// Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial)
+scene.add(particles)
+
+// ############################################################### //
+// ######################   Heart Part   ######################### //
+// ############################################################### //
+
+// Material
+const heartMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    vertexShader: heartVertexShader,
+    fragmentShader: heartFragmentShader,
+    uniforms:
+    {
+        uTime:    { value: 0 },
+        uWidth:   { value: parameters.width },
+        uStep:    { value: parameters.step },
+        uSize:    { value: 1.0 * parameters.size * renderer.getPixelRatio() },
+        uTexture: { value: spotTexture },
+    }
+})
+
+// Geometry
+const heartGeometry = new THREE.BufferGeometry()
+
+// particles number
+const heartCount = parameters.nHeart 
+// Original position for each vertex (all set to 0)
+const heartPosition = new Float32Array(heartCount * 3)
+// Set 3 random values for each vertex
+const heartRandom = new Float32Array(heartCount * 3)
+// Color for each vertex
+const heartColor = new Float32Array(heartCount * 3)
+
+heartPosition.forEach( (value, i) => heartPosition[i] = 0)
+heartRandom.forEach( (value, i) => heartRandom[i] = Math.random())
+heartColor.forEach( (value, i) => {
+    switch ( i % 3 ) {
+        case 0: heartColor[i] = Math.random() * 0.5;       break // red
+        case 1: heartColor[i] = Math.random() * 0.5;       break // green
+        case 2: heartColor[i] = Math.random() * 0.4 + 0.6; break // blue
+    }
+})
+
+heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPosition, 3))
+heartGeometry.setAttribute('aRandomness', new THREE.BufferAttribute(heartRandom, 3))
+heartGeometry.setAttribute('color', new THREE.BufferAttribute(heartColor, 3))
+
+// Points
+const heart = new THREE.Points(heartGeometry, heartMaterial)
+scene.add(heart)
+
+// RWD
 window.addEventListener('resize', () => {
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -57,20 +183,53 @@ scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({ canvas: canvas })
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+// Raycaster
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+
+// Desktop
+window.addEventListener('mousemove', (event) => {
+    mouse.x = event.clientX / sizes.width * 2 - 1
+    mouse.y = - (event.clientY / sizes.height) * 2 + 1
+})
+// Mobile
+window.addEventListener('touchstart', (event) => {
+    mouse.x = event.touches[0].clientX / sizes.width * 2 - 1
+    mouse.y = - (event.touches[0].clientY / sizes.height) * 2 + 1
+})
 
 // Animate
 const clock = new THREE.Clock()
 const tick = () => {
+    stats.begin()
     const elapsedTime = clock.getElapsedTime()
 
-    material.uniforms.uTime.value = elapsedTime * parameters.speed / Math.PI
+    // make heart particles follow the mouse
+    raycaster.setFromCamera(mouse, camera)
+    const ray = raycaster.ray.direction
+    // heart movement according to raycaster ( need some vector calculations )
+    const heartMove = camera.position.clone()
+                                     .add( ray.normalize() )
+                                     .sub( solid.position )
+                                     .normalize()
+                                     .multiplyScalar( parameters.width/2.5 )
+                                     .sub( heart.position )
+                                     .multiplyScalar( 0.01 )
+    heart.position.add( heartMove )
 
     controls.update()
     renderer.render(scene, camera)
+
+    solidMaterial.uniforms.uTime.value = elapsedTime * parameters.speed / Math.PI
+    particlesMaterial.uniforms.uTime.value = elapsedTime * parameters.speed / Math.PI
+    heartMaterial.uniforms.uTime.value = elapsedTime * parameters.speed / Math.PI
+
+    solid.rotation.z = elapsedTime * 0.01;
+    solid.rotation.y = elapsedTime * -0.03;
+    particles.rotation.z = elapsedTime * 0.01;
+    particles.rotation.y = elapsedTime * -0.03;
+
     window.requestAnimationFrame(tick)
+    stats.end()
 }
 tick()
