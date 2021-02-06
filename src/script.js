@@ -175,6 +175,12 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+// Fullscreen
+window.addEventListener('dblclick', () => {
+    if(!document.fullscreenElement){ canvas.requestFullscreen() }
+    else { document.exitFullscreen() }
+})
+
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 
