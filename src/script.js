@@ -180,7 +180,7 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 
 
 const cameraPosition = (camera) => {
     switch (sizes.width > 768)  {
-        case false: camera.position.set(0.375, -0.375, 1.5); break  // Mobile
+        case false: camera.position.set(0.325, -0.325, 1.3); break  // Mobile
         case true: camera.position.set(0.25, -0.25, 1);      break  // Desktop
     }
 }
