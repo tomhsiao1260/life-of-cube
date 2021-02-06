@@ -6,6 +6,7 @@ uniform sampler2D uTexture; // texture for particles
 
 varying float vMode;        // current mode
 varying vec2 vUv;           // UV coordinate
+varying float vPop;
 
 void main()
 {
@@ -20,7 +21,8 @@ void main()
 
     float transition = roundness / sqrt(vMode);
 
-    vec3 originColor = vec3(vUv, 1.0) / 4.0;
+    float factor = mix(4.0, 1.0, vPop);
+    vec3 originColor = vec3(vUv, 1.0) / factor;
     vec3 beatColor   = vec3(0.6, 0.0, 0.6);
     vec3 color       = originColor;
 

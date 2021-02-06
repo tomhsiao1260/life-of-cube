@@ -9,6 +9,7 @@ attribute float aRandomness; // random value for pop particles
 
 varying float vMode;         // current mode
 varying vec2 vUv;            // UV coordinate
+varying float vPop;          // 
 
 void main()
 {
@@ -40,6 +41,7 @@ void main()
     float ampPop = 0.15 * order * roundness * aRandomness;
     float threshold = 1.0 - 0.0125 * pow(order, 3.5);
     modelPosition.xyz *= 1.0 + ampPop * step(threshold, aRandomness);
+    vPop = step(threshold, aRandomness) * roundness;
 
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
