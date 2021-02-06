@@ -38,7 +38,7 @@ void main()
     // transition between cube and sphere (cells)
     modelPosition.xyz = mix(cube, sphere, roundness);
     // randomly pop particles
-    float ampPop = 0.15 * order * roundness * aRandomness;
+    float ampPop = 0.2 * order * roundness * aRandomness;
     float threshold = 1.0 - 0.005 * pow(order, 3.5);
     vPop = step(threshold, aRandomness);
     modelPosition.xyz *= 1.0 + ampPop * vPop;

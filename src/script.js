@@ -206,6 +206,8 @@ window.addEventListener('touchstart', (event) => {
     mouse.y = - (event.touches[0].clientY / sizes.height) * 2 + 1
 })
 
+const heartSpeed = (sizes.width > 768) ? 0.01 : 0.05
+
 // Animate
 const clock = new THREE.Clock()
 const tick = () => {
@@ -222,7 +224,7 @@ const tick = () => {
                                      .normalize()
                                      .multiplyScalar( parameters.width/2.5 )
                                      .sub( heart.position )
-                                     .multiplyScalar( 0.01 )
+                                     .multiplyScalar( heartSpeed )
     heart.position.add( heartMove )
 
     controls.update()
