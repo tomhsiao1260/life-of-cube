@@ -3,7 +3,7 @@ Life of Cube | <a href="https://tomhsiao1260.github.io/life-of-cube/" target="_b
 </h1>
 
 <p align="center">
-    <img src="./src/assets/life-of-cube.gif" width="450px"/>
+    <img src="./src/assets/life-of-cube.gif" width="800px"/>
 </p>
 
 ## Introduction
@@ -28,9 +28,9 @@ npm install
 npm run dev
 ```
 
-## Note
+## Notes
 
-Would be really appreciated if you are willing to give me a star!
-If you have any questions or somewhere I can do better, welcome to send an issue or e-mail to me.
+<p>Would be really appreciated if you are willing to give me a star 🎉</p>
+<p>If you have any questions or somewhere I can do better, welcome to send an issue or e-mail to me 🙏</p>
 
 e-mail: tomtogo1260@gmail.com
