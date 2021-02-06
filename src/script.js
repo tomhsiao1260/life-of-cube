@@ -35,8 +35,8 @@ const parameters = {
     speed: 1,    // progress speed
     step: 6,     // number of splits
     size: 10,    // particle size
-    counts: 50,  // particles number along one side
-    nHeart: 200, // heart particles number
+    counts: 30,  // particles number along one side
+    nHeart: 100, // heart particles number
 }
 
 // Renderer
@@ -150,7 +150,7 @@ heartColor.forEach( (value, i) => {
     switch ( i % 3 ) {
         case 0: heartColor[i] = Math.random() * 0.5;       break // red
         case 1: heartColor[i] = Math.random() * 0.5;       break // green
-        case 2: heartColor[i] = Math.random() * 0.4 + 0.6; break // blue
+        case 2: heartColor[i] = Math.random() * 0.5 + 0.5; break // blue
     }
 })
 
@@ -169,6 +169,7 @@ window.addEventListener('resize', () => {
 
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
+    cameraPosition(camera)
 
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -176,7 +177,14 @@ window.addEventListener('resize', () => {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0.25, - 0.25, 1)
+
+const cameraPosition = (camera) => {
+    switch (sizes.width > 768)  {
+        case false: camera.position.set(0.375, -0.375, 1.5); break  // Mobile
+        case true: camera.position.set(0.25, -0.25, 1);      break  // Desktop
+    }
+}
+cameraPosition(camera)
 scene.add(camera)
 
 // Controls

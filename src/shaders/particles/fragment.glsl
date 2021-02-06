@@ -20,9 +20,10 @@ void main()
     beat *= step(2.01, vMode);
 
     float transition = roundness / sqrt(vMode);
+    // 0.5 (did not pop up or roundness 0), ~1.0 (pop up at roundness ~1)
+    float intensity = mix(0.5, 1.0, vPop * roundness);
 
-    float factor = mix(4.0, 1.0, vPop);
-    vec3 originColor = vec3(vUv, 1.0) / factor;
+    vec3 originColor = vec3(vUv, 1.0) * intensity;
     vec3 beatColor   = vec3(0.6, 0.0, 0.6);
     vec3 color       = originColor;
 
@@ -34,9 +35,9 @@ void main()
     // enable: 0 (invisible), 1 (visible)
     float enable = floor(mod(uTime, 2.0 * uStep) / uStep);
     // enable transition trick (linear rather than step transition)
-    float crop = mix(3.0, 20.0, enable) * (1.0 - mod(uTime, uStep) / uStep);
+    float crop = mix(5.0, 20.0, enable) * (1.0 - mod(uTime, uStep) / uStep);
     crop = clamp(crop, 0.0, 1.0);
-    // enable: 0 -> 1 (slope 3.0), 1 -> 0 (slope 20.0) 
+    // enable: 0 -> 1 (slope 5.0), 1 -> 0 (slope 20.0) 
     enable = mix(1.0 - crop, crop, enable);
 
     gl_FragColor  = texture2D(uTexture, gl_PointCoord);
