@@ -1,0 +1,36 @@
+<h1 align="center">
+Life of Cube | <a href="https://tomhsiao1260.github.io/life-of-cube/" target="_blank">Play It<a/>
+</h1>
+
+<p align="center">
+    <img src="./src/assets/life-of-cube.gif" width="450px"/>
+</p>
+
+## Introduction
+
+<h4 align="justify">
+Try to make a cube come to life through three.js and WebGL. All techniques used in this project can be found in <a href="https://threejs-journey.xyz/" target="_blank">Three.js Journey<a/> course.
+<h4/>
+
+<h4>
+keywords： Three.js, WebGL, shader, GLSL, particles system
+<h4/>
+
+## Installation
+
+```
+npm install
+```
+
+## Start Server
+
+```
+npm run dev
+```
+
+## Note
+
+Would be really appreciated if you are willing to give me a star!
+If you have any questions or somewhere I can do better, welcome to send an issue or e-mail to me.
+
+e-mail: tomtogo1260@gmail.com
