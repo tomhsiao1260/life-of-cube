@@ -1,7 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
 import Stats from 'stats.js'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
 
 import solidVertexShader from './shaders/solid/vertex.glsl'
 import solidFragmentShader from './shaders/solid/fragment.glsl'
@@ -194,8 +194,10 @@ cameraPosition(camera)
 scene.add(camera)
 
 // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+const controls = new TrackballControls( camera, canvas )
+controls.rotateSpeed = 2.0
+controls.staticMoving = false
+controls.dynamicDampingFactor = 0.2
 
 // Raycaster
 const raycaster = new THREE.Raycaster()
