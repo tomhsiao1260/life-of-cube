@@ -12,9 +12,7 @@ Life of Cube | <a href="https://tomhsiao1260.github.io/life-of-cube/" target="_b
 Try to make a cube come to life through three.js and WebGL. All techniques used in this project can be found in <a href="https://threejs-journey.xyz/" target="_blank">Three.js Journey<a/> course.
 <h4/>
 
-<h4>
-keywords： Three.js, WebGL, shader, GLSL, particles system
-<h4/>
+keywords： [Three.js](https://threejs.org/), [WebGL](https://github.com/KhronosGroup/WebGL), [GLSL](https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders), shaders, particles system
 
 ## Installation
 
