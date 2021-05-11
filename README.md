@@ -1,5 +1,5 @@
 <h1 align="center">
-Life of Cube | <a href="https://tomhsiao1260.github.io/life-of-cube/" target="_blank">Play It<a/>
+Life of Cube | <a href="https://tomhsiao1260.github.io/life-of-cube/" target="_blank">Play It</a>
 </h1>
 
 <p align="center">
