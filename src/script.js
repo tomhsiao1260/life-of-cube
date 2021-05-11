@@ -195,7 +195,8 @@ scene.add(camera)
 
 // Controls
 const controls = new TrackballControls( camera, canvas )
-controls.rotateSpeed = 1.5
+controls.rotateSpeed = 5.0
+controls.dynamicDampingFactor = 0.15
 
 // Raycaster
 const raycaster = new THREE.Raycaster()
