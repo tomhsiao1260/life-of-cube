@@ -1,28 +1,25 @@
+const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
     entry: path.resolve(__dirname, '../src/script.js'),
-    output:
-    {
-        filename: 'bundle.[contenthash].js',
-        path: path.resolve(__dirname, '../dist')
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, '../dist'),
     },
     devtool: 'source-map',
     plugins:
     [
+        new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
-            patterns: [
-                { from: path.resolve(__dirname, '../static') }
-            ]
+            patterns: [{ from: path.resolve(__dirname, '../static') }],
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../src/index.html'),
             minify: true
-        }),
-        new MiniCSSExtractPlugin()
+        })
     ],
     module:
     {
@@ -49,8 +46,18 @@ module.exports = {
                 test: /\.css$/,
                 use:
                 [
-                    MiniCSSExtractPlugin.loader,
+                    'style-loader',
                     'css-loader'
+                ]
+            },
+
+            // SCSS
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
                 ]
             },
 
@@ -71,19 +78,42 @@ module.exports = {
 
             // Fonts
             {
-                test: /\.(ttf|eot|woff|woff2)$/,
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    'file-loader',
+                ],
+            },
+
+            // Models
+            {
+                test: /\.(glb|gltf|fbx|obj)$/,
                 use:
                 [
                     {
                         loader: 'file-loader',
                         options:
                         {
-                            outputPath: 'assets/fonts/'
+                            outputPath: 'assets/models/'
                         }
                     }
                 ]
             },
-            
+
+            // MP3
+            {
+                test: /\.(mp3)$/,
+                use:
+                [
+                    {
+                        loader: 'file-loader',
+                        options:
+                        {
+                            outputPath: 'assets/audios/'
+                        }
+                    }
+                ]
+            },
+
             // Shaders
             {
                 test: /\.(glsl|vs|fs|vert|frag)$/,
