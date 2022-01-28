@@ -52,6 +52,7 @@ const width = parameters.width
 
 // Material
 const solidMaterial = new THREE.ShaderMaterial({
+    transparent: true,
     depthWrite: false,
     vertexShader: solidVertexShader,
     fragmentShader: solidFragmentShader,
