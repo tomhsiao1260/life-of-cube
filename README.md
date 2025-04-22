@@ -26,9 +26,3 @@ npm install
 npm run dev
 ```
 
-## Notes
-
-<p>Would be really appreciated if you are willing to give me a star 🎉</p>
-<p>If you have any questions or somewhere I can do better, welcome to send an issue or e-mail to me 🙏</p>
-
-e-mail: tomtogo1260@gmail.com
